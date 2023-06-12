@@ -43,13 +43,12 @@ public class DataServiceImpl implements DataService {
 
     @Override
     public void addBroker(BrokerRequest brokerRequest) {
-        User user = userRepository.findByEmail(getCurrentUsername()).get();
         Broker broker = new Broker();
         broker.setName(brokerRequest.getName());
         broker.setDescription(brokerRequest.getDescription());
         broker.setPhone(brokerRequest.getPhone());
         broker.setLocation(broker.getLocation());
-        broker.setUser(user);
+        broker.setUser(null);
         brokerRepository.save(broker);
     }
 
@@ -85,11 +84,11 @@ public class DataServiceImpl implements DataService {
 
     @Override
     public void addDeveloper(DeveloperRequest developerRequest) {
-        User user = userRepository.findByEmail(getCurrentUsername()).get();
         Developer developer = new Developer();
         developer.setName(developerRequest.getName());
+        developer.setLocation(developer.getLocation());
         developer.setFee(developerRequest.getFee());
-        developer.setUser(user);
+        developer.setUser(null);
         developerRepository.save(developer);
     }
 
@@ -98,7 +97,9 @@ public class DataServiceImpl implements DataService {
         if (developerRepository.findById(id).isPresent()) {
             Developer developer = developerRepository.findById(id).get();
             developer.setName(developerRequest.getName());
+            developer.setLocation(developerRequest.getLocation());
             developer.setFee(developerRequest.getFee());
+            developerRepository.save(developer);
         }
     }
 

@@ -4,14 +4,13 @@ import com.crud.project.model.User;
 import com.crud.project.request.LoginRequest;
 import com.crud.project.request.RegisterRequest;
 import com.crud.project.response.JwtResponse;
+import com.crud.project.response.MessageResponse;
 import com.crud.project.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -35,9 +34,9 @@ public class AuthController {
         if (message.equals("Username is already taken") || message.equals("Role is not valid")) {
             return ResponseEntity
                     .badRequest()
-                    .body(message);
+                    .body(MessageResponse.builder().message(message).build());
         }
-        return ResponseEntity.ok(message);
+        return ResponseEntity.ok(MessageResponse.builder().message(message).build());
     }
 
     @Operation(summary = "Get User", description = "Get Logged In User Data")
@@ -47,7 +46,7 @@ public class AuthController {
         JwtResponse response = JwtResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .roles(Collections.singletonList(user.getRole()))
+                .roles(user.getRole())
                 .build();
         return ResponseEntity.ok(response);
     }

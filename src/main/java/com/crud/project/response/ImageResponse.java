@@ -14,12 +14,14 @@ public class ImageResponse {
     private String url;
     private String type;
     private long size;
+    private byte[] file;
 
-    public ImageResponse(String id, String name, String url, String type, long size) {
+    public ImageResponse(String id, String name, String url, String type, long size, byte[] file) {
         this.id = id;
         this.name = name;
         this.url = url;
         this.type = type;
         this.size = size;
+        this.file = file;
     }
 }

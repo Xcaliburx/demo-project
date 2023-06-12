@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/image")
 public class ImageController {
@@ -24,12 +26,13 @@ public class ImageController {
 
     @Operation(summary = "Upload New Image", description = "Upload new image to database")
     @PostMapping
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
         try {
             Image image = service.saveImage(file);
-            return new ResponseEntity<>(util.convertToImageResponse(image), HttpStatus.CREATED);
+            return new ResponseEntity<>(util.convertToImageResponse(image, file.getBytes()), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed upload file", HttpStatus.BAD_REQUEST);
+            throw e;
+//            return new ResponseEntity<>("Failed upload file", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -37,7 +40,7 @@ public class ImageController {
     @GetMapping("/{id}")
     public ResponseEntity<ImageResponse> getImage(@PathVariable String id) {
         Image image = service.getImage(id);
-        return new ResponseEntity<>(util.convertToImageResponse(image), HttpStatus.OK);
+        return new ResponseEntity<>(util.convertToImageResponse(image, image.getData()), HttpStatus.OK);
     }
 
     @Operation(summary = "Fetch Imager", description = "Get Image Data")

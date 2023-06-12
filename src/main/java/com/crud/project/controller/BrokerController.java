@@ -51,7 +51,7 @@ public class BrokerController {
     }
 
     @Operation(summary = "Update Broker", description = "Update Broker Data by Id")
-    @PostMapping(value = "/{id}")
+    @PutMapping(value = "/{id}")
     public ResponseEntity<?> updateBroker(
             @PathVariable("id") long id,
             @RequestBody BrokerRequest broker) throws IOException {

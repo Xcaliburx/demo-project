@@ -51,7 +51,7 @@ public class DeveloperController {
     }
 
     @Operation(summary = "Update Developer", description = "Update Developer Data by Id")
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateDeveloper(
             @PathVariable long id,
             @RequestBody DeveloperRequest request) throws IOException {

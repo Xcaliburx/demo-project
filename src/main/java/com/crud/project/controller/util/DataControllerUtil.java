@@ -32,7 +32,7 @@ public class DataControllerUtil {
                 .description(broker.getDescription())
                 .location(broker.getLocation())
                 .image(Optional.ofNullable(broker.getImage())
-                        .map(this::convertToImageResponse)
+                        .map(image -> convertToImageResponse(image, image.getData()))
                         .orElse(null))
                 .build();
     }
@@ -50,7 +50,7 @@ public class DataControllerUtil {
                 .fee(developer.getFee())
                 .location(developer.getLocation())
                 .image(Optional.ofNullable(developer.getImage())
-                        .map(this::convertToImageResponse)
+                        .map(image -> convertToImageResponse(image, image.getData()))
                         .orElse(null))
                 .projects(convertToProjectResponseList(developer.getProjects()))
                 .build();
@@ -70,7 +70,7 @@ public class DataControllerUtil {
                 .build();
     }
 
-    public ImageResponse convertToImageResponse(Image image) {
+    public ImageResponse convertToImageResponse(Image image, byte[] file) {
         String fileDownloadUri = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
                 .path("/image/file/")
@@ -83,6 +83,7 @@ public class DataControllerUtil {
                 .url(fileDownloadUri)
                 .type(image.getType())
                 .size(image.getData().length)
+                .file(file)
                 .build();
     }
 }
