@@ -2,8 +2,6 @@ package com.crud.project.service.impl;
 
 import com.crud.project.model.Broker;
 import com.crud.project.model.Developer;
-import com.crud.project.model.Image;
-import com.crud.project.model.User;
 import com.crud.project.repository.BrokerRepository;
 import com.crud.project.repository.DeveloperRepository;
 import com.crud.project.repository.UserRepository;
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;

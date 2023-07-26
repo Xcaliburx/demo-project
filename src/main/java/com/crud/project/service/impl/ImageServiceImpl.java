@@ -9,7 +9,6 @@ import com.crud.project.repository.DeveloperRepository;
 import com.crud.project.repository.ImageRepository;
 import com.crud.project.repository.UserRepository;
 import com.crud.project.service.ImageService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

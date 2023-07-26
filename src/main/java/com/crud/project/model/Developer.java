@@ -28,11 +28,11 @@ public class Developer {
     @Column
     private int fee;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "image_id")
     private Image image;
 
-    @OneToMany(mappedBy = "developer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "developer", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<Project> projects;
 
     public Developer() {

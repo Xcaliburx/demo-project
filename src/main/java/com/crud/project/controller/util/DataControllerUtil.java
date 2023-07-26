@@ -64,6 +64,7 @@ public class DataControllerUtil {
 
     public ProjectResponse converToProjectResponse(Project project) {
         return ProjectResponse.builder()
+                .id(project.getId())
                 .projectName(project.getProjectName())
                 .description(project.getDescription())
                 .price(project.getPrice())

@@ -35,8 +35,6 @@ public class ProjectController {
 
     @Operation(summary = "Get Projects By Developer Id", description = "Get All Project List of a Developer using Id")
     @GetMapping("/{projectId}/project")
-
-
     public ResponseEntity<List<ProjectResponse>> getProjectByDeveloperId(@PathVariable long projectId) {
         List<Project> responses = projectService.getProjectByDeveloperId(projectId);
         return new ResponseEntity<>(util.convertToProjectResponseList(responses), HttpStatus.OK);

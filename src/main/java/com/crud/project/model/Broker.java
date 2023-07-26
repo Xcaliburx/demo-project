@@ -30,7 +30,7 @@ public class Broker {
     @Column
     private String location;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name = "image_id")
     private Image image;
 

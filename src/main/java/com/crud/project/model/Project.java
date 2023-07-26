@@ -23,7 +23,7 @@ public class Project {
     @Column
     private int price;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "developer_id")
     private Developer developer;
 
