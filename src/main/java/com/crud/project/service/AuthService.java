@@ -11,5 +11,5 @@ public interface AuthService {
 
     String register(RegisterRequest request);
 
-    User getUser();
+    JwtResponse getUser(String sessionId);
 }

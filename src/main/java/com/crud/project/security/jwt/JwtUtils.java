@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,8 @@ import java.util.function.Function;
 @Slf4j
 public class JwtUtils {
 
-    public static final long JWT_TOKEN_VALIDITY = 5 * 24 * 60 * 60;
+    @Value("${jwt.timeout}")
+    private long JWT_TOKEN_VALIDITY;
 
     Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 

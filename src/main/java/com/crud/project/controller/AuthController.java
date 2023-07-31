@@ -6,11 +6,15 @@ import com.crud.project.request.RegisterRequest;
 import com.crud.project.response.JwtResponse;
 import com.crud.project.response.MessageResponse;
 import com.crud.project.service.AuthService;
+import com.crud.project.session.SessionConsumer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -20,6 +24,9 @@ public class AuthController {
 
     @Autowired
     AuthService authService;
+
+    @Autowired
+    SessionConsumer sessionConsumer;
 
     @Operation(summary = "Login User", description = "Login to access data")
     @PostMapping("/login")
@@ -41,13 +48,20 @@ public class AuthController {
 
     @Operation(summary = "Get User", description = "Get Logged In User Data")
     @GetMapping("/user")
-    public ResponseEntity<JwtResponse> getUser() {
-        User user = authService.getUser();
-        JwtResponse response = JwtResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .roles(user.getRole())
-                .build();
+    public ResponseEntity<JwtResponse> getUser(HttpServletRequest request) {
+        String jwtToken = request.getHeader("Authorization");
+        String sessionId = StringUtils.replace(jwtToken, "Bearer ", "");
+        JwtResponse response = authService.getUser(sessionId);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "Logout", description = "Logout")
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        String jwtToken = request.getHeader("Authorization");
+        String sessionId = StringUtils.replace(jwtToken, "Bearer ", "");
+        sessionConsumer.removeSessionById(sessionId);
+        return ResponseEntity.ok(MessageResponse.builder().message("Success Logout").build());
+    }
+
 }

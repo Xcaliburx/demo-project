@@ -2,9 +2,11 @@ package com.crud.project.service.impl;
 
 import com.crud.project.model.Broker;
 import com.crud.project.model.Developer;
+import com.crud.project.model.Session;
 import com.crud.project.model.User;
 import com.crud.project.repository.BrokerRepository;
 import com.crud.project.repository.DeveloperRepository;
+import com.crud.project.repository.SessionEntityRepository;
 import com.crud.project.repository.UserRepository;
 import com.crud.project.request.LoginRequest;
 import com.crud.project.request.RegisterRequest;
@@ -13,6 +15,7 @@ import com.crud.project.security.jwt.JwtUtils;
 import com.crud.project.security.services.UserDetailsImpl;
 import com.crud.project.security.services.UserDetailsServiceImpl;
 import com.crud.project.service.AuthService;
+import com.crud.project.session.SessionPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,6 +54,12 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
 
+    @Autowired
+    SessionPublisher session;
+
+    @Autowired
+    SessionEntityRepository sessionRepository;
+
     @Override
     public JwtResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
@@ -64,11 +74,16 @@ public class AuthServiceImpl implements AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
+        String sessionId = UUID.randomUUID().toString();
+        session.setSession(jwt, String.valueOf(userData.getId()), sessionId, true);
+        Session sessionData = sessionRepository.findBySessionId(jwt);
+
         return JwtResponse.builder()
                 .token(jwt)
                 .id(userData.getId())
                 .email(userData.getEmail())
                 .roles(roles.get(0))
+                .expiredDate(sessionData.getExpiredTime())
                 .build();
     }
 
@@ -103,8 +118,15 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User getUser() {
+    public JwtResponse getUser(String sessionId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return userRepository.findByEmail(auth.getName()).get();
+        User user = userRepository.findByEmail(auth.getName()).get();
+        Session session = sessionRepository.findBySessionId(sessionId);
+        return JwtResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .roles(user.getRole())
+                .expiredDate(session.getExpiredTime())
+                .build();
     }
 }
