@@ -16,6 +16,9 @@ public interface SessionEntityRepository extends JpaRepository<Session, String> 
     @Query(value = "DELETE FROM Session a WHERE a.userId = :userId")
     void deleteByUserId(@Param("userId") String userId);
 
+    @Query(value = "SELECT a FROM Session a WHERE a.authToken = :token")
+    Session findByAuthToken(@Param("token") String token);
+
     @Query(value = "SELECT a FROM Session a WHERE a.sessionId = :sessionId")
     Session findBySessionId(@Param("sessionId") String sessionId);
 

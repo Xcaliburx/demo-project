@@ -1,11 +1,15 @@
 package com.crud.project.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "spring_session")
+@Getter @Setter
 public class Session {
 
     @Id

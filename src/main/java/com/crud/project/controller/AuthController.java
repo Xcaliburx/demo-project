@@ -57,11 +57,8 @@ public class AuthController {
 
     @Operation(summary = "Logout", description = "Logout")
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
-        String jwtToken = request.getHeader("Authorization");
-        String sessionId = StringUtils.replace(jwtToken, "Bearer ", "");
+    public ResponseEntity<?> logout(@RequestBody String sessionId) {
         sessionConsumer.removeSessionById(sessionId);
         return ResponseEntity.ok(MessageResponse.builder().message("Success Logout").build());
     }
-
 }

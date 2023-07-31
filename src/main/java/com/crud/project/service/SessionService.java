@@ -8,6 +8,8 @@ public interface SessionService {
 
     void deleteByUserId(String userId);
 
+    boolean findByAuthTokenExist(String token);
+
     Session getBySessionId(String sessionId);
 
     void save(Session entity);

@@ -1,6 +1,7 @@
 package com.crud.project.security.jwt;
 
 import com.crud.project.security.services.UserDetailsServiceImpl;
+import com.crud.project.service.SessionService;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    @Autowired
+    private SessionService sessionService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
@@ -34,19 +38,23 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         if (StringUtils.startsWith(requestTokenHeader, "Bearer ")) {
             String jwtToken = requestTokenHeader.substring(7);
             try {
-                String username = jwtUtils.getUsernameFromToken(jwtToken);
-                if (StringUtils.isNotEmpty(username)
-                        && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                    if (jwtUtils.validateToken(jwtToken, userDetails)) {
-                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                                new UsernamePasswordAuthenticationToken(
-                                        userDetails, null, userDetails.getAuthorities());
-                        usernamePasswordAuthenticationToken.setDetails(
-                                new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext()
-                                .setAuthentication(usernamePasswordAuthenticationToken);
+                if (sessionService.findByAuthTokenExist(jwtToken)) {
+                    String username = jwtUtils.getUsernameFromToken(jwtToken);
+                    if (StringUtils.isNotEmpty(username)
+                            && SecurityContextHolder.getContext().getAuthentication() == null) {
+                        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                        if (jwtUtils.validateToken(jwtToken, userDetails)) {
+                            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                                    new UsernamePasswordAuthenticationToken(
+                                            userDetails, null, userDetails.getAuthorities());
+                            usernamePasswordAuthenticationToken.setDetails(
+                                    new WebAuthenticationDetailsSource().buildDetails(request));
+                            SecurityContextHolder.getContext()
+                                    .setAuthentication(usernamePasswordAuthenticationToken);
+                        }
                     }
+                } else {
+                    logger.error("Session not found in database");
                 }
             } catch (IllegalArgumentException e) {
                 logger.error("Unable to fetch JWT Token");

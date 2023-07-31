@@ -26,6 +26,12 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    public boolean findByAuthTokenExist(String token) {
+        Session session = repo.findByAuthToken(token);
+        return session != null;
+    }
+
+    @Override
     public Session getBySessionId(String sessionId) {
         return repo.findBySessionId(sessionId);
     }

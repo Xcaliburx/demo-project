@@ -75,8 +75,8 @@ public class AuthServiceImpl implements AuthService {
                 .collect(Collectors.toList());
 
         String sessionId = UUID.randomUUID().toString();
-        session.setSession(jwt, String.valueOf(userData.getId()), sessionId, true);
-        Session sessionData = sessionRepository.findBySessionId(jwt);
+        session.setSession(sessionId, String.valueOf(userData.getId()), jwt, true);
+        Session sessionData = sessionRepository.findBySessionId(sessionId);
 
         return JwtResponse.builder()
                 .token(jwt)
@@ -84,6 +84,7 @@ public class AuthServiceImpl implements AuthService {
                 .email(userData.getEmail())
                 .roles(roles.get(0))
                 .expiredDate(sessionData.getExpiredTime())
+                .sessionId(sessionId)
                 .build();
     }
 

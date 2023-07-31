@@ -15,4 +15,5 @@ public class JwtResponse {
     private String email;
     private String roles;
     private long expiredDate;
+    private String sessionId;
 }
